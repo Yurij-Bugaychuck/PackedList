@@ -14,8 +14,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    PackedObjectContainer newV;
-
+    PackedObjectContainer* v;
+    PackedLib* Packed;
 private slots:
 
 

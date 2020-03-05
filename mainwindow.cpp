@@ -10,27 +10,49 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QPolygon p1(3);
-    p1.putPoints(0, 4, 0, 0, 0, 2, 2, 2, 2, 0);
+    qInfo() << "Ok";
+    QPolygon p1(4);
+    p1.putPoints(0, 4, 0, 0, 0, 4, 8, 4, 8, 0);
 
-    QPolygon p2(3);
+    QPolygon p2(4);
     p2.putPoints(0, 4, 0, 0, 0, 10, 1, 10, 1, 0);
 
-    PackedObjectContainer v;
-
-    v.push_back(p1);
-    v.push_back(p2);
-    v.push_back(p1);
-    v.push_back(p2);
-    v.push_back(p1);
-    v.push_back(p2);
+    QPolygon p3(4);
+    p3.putPoints(0, 4, 0, 0, 0, 2, 1, 2, 1, 0);
 
 
+    v = new PackedObjectContainer();
+
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+
+    v->push_back(p3);
+    v->push_back(p3);
+    v->push_back(p3);
+    v->push_back(p3);
 
 
-    PackedLib Packed(160, 7);
-    newV = Packed.fit(v);
-    qInfo() << newV.getObject();
+
+
+    Packed = new PackedLib(40, 20);
+    qInfo() << *v->getObject();
+   // Packed->fit(v);
+    qInfo() << v->fit << v->size();
+
+    qInfo() << *v->getObject();
+
+    Packed->initPopulation(v,100);
+
+    v = Packed->Top();
+
+
 
 }
 
@@ -57,9 +79,9 @@ void MainWindow::paintEvent(QPaintEvent *event)
     painter.scale(20, 20);
     painterImage.scale(20, 20);
 
-    for(int i = 0; i < newV.size(); ++i){
-        painter.drawPolygon(newV[i]);
-        painterImage.drawPolygon(newV[i]);
+    for(int i = 0; i < v->size(); ++i){
+        painter.drawPolygon(v->at(i));
+        painterImage.drawPolygon(v->at(i));
     }
 
     QPolygon p2(3);
