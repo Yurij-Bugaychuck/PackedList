@@ -37,16 +37,25 @@ MainWindow::MainWindow(QWidget *parent)
     v->push_back(p3);
     v->push_back(p3);
     v->push_back(p3);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+
+
+
+
+
+    for(auto i : *v){
+        qInfo() << i.number;
+    }
+
+    qInfo() << "OKKKK";
 
 
 
 
     Packed = new PackedLib(40, 20);
-    qInfo() << *v->getObject();
-   // Packed->fit(v);
-    qInfo() << v->fit << v->size();
-
-    qInfo() << *v->getObject();
 
     Packed->initPopulation(v,100);
 
@@ -80,8 +89,8 @@ void MainWindow::paintEvent(QPaintEvent *event)
     painterImage.scale(20, 20);
 
     for(int i = 0; i < v->size(); ++i){
-        painter.drawPolygon(v->at(i));
-        painterImage.drawPolygon(v->at(i));
+        painter.drawPolygon(v->at(i).polygon);
+        painterImage.drawPolygon(v->at(i).polygon);
     }
 
     QPolygon p2(3);

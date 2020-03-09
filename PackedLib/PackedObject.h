@@ -8,28 +8,42 @@
 #include<QVector>
 #include<QTransform>
 #include<QDebug>
+struct PackedObject{
+    int number = 0;
+    QPolygon polygon;
+
+    PackedObject(){
+
+    }
+    PackedObject(QPolygon Obj, int i){
+        polygon = Obj;
+        number = i;
+    }
+};
+
 class PackedObjectContainer{
-    QVector<QPolygon> *v;
+    QVector<PackedObject> *v;
 
 public:
     int fit = 0;
     PackedObjectContainer(){
-        v = new QVector<QPolygon>;
+        v = new QVector<PackedObject>;
         v->clear();
     }
 
-    PackedObjectContainer(QVector<QPolygon> *v){
-        v = new QVector<QPolygon>;
-        this->v = v;
-    }
+
 
     void push_back(QPolygon Obj){
-        v->push_back(Obj);
+        v->push_back(PackedObject(Obj, v->size()));
+
+    }
+    void push_back(PackedObject obj){
+        v->push_back(obj);
     }
 
     bool contains(QPolygon Obj){ // true = interseted
         for(int i = 0; i < v->size(); ++i){
-            if (v->at(i).intersected(Obj).size() != 0) return 1;
+            if (v->at(i).polygon.intersected(Obj).size() != 0) return 1;
         }
         return 0;
     }
@@ -42,23 +56,19 @@ public:
         delete v;
         v = newV->getObject();
     }
-    QVector<QPolygon>* getObject(){
+    QVector<PackedObject>* getObject(){
         return v;
     }
 
-    QPolygon at(const int index){
+    PackedObject at(const int index){
         return v->at(index);
     }
 
-    QPolygon operator[] (const int index){
-        return v->at(index);
-    }
-
-    QVector<QPolygon>::iterator begin(){
+    QVector<PackedObject>::iterator begin(){
         return v->begin();
     }
 
-    QVector<QPolygon>::iterator end(){
+    QVector<PackedObject>::iterator end(){
         return v->end();
     }
 
@@ -69,7 +79,10 @@ public:
             newV->push_back(i);
         }
 
+
+
         std::random_shuffle(newV->begin(), newV->end());
+
 
 
         return newV;
@@ -78,7 +91,7 @@ public:
         if (a < 0 || b > v->size()) return -1;
         int fi = -1;
         for(int i =  a; i < b; ++i){
-            for(QPoint j : v->at(i)){
+            for(QPoint j : v->takeAt(i).polygon){
                 fi = std::max(fi, j.x());
             }
         }
@@ -115,54 +128,55 @@ public:
                for(int i = 0; i <= W; ++i){
                    for(int j = 0; j <= H; ++j){
 
-                      QPolygon p = v->at(k);
+                      PackedObject p = v->at(k);
                       QTransform matrix;
 
-                      p.translate(i, j);
-                      if (!newV->contains(p) && !isOut(p)){
+                      p.polygon.translate(i, j);
+                      if (!newV->contains(p.polygon) && !isOut(p.polygon)){
 
                           flag = 1;
                           newV->push_back(p);
                           //qInfo() << i << j;
                           break;
                       }
-                      p.translate(-i, -j);
+                      p.polygon.translate(-i, -j);
 
                       matrix.rotate(90);
                       matrix.rotate(180, Qt::XAxis);
-                      p = matrix.map(p);
-                      p.translate(i, j);
-                      if (!newV->contains(p) && !isOut(p)){
+                      p.polygon = matrix.map(p.polygon);
+                      p.polygon.translate(i, j);
+                      if (!newV->contains(p.polygon) && !isOut(p.polygon)){
                           flag = 1;
                           newV->push_back(p);
                           //qInfo() << i << j;
                           break;
                       }
-                      p.translate(-i, -j);
+                      p.polygon.translate(-i, -j);
 
                       matrix.rotate(90);
                       matrix.rotate(180, Qt::XAxis);
-                      p = matrix.map(p);
-                      p.translate(i, j);
-                      if (!newV->contains(p) && !isOut(p)){
+                      p.polygon = matrix.map(p.polygon);
+                      p.polygon.translate(i, j);
+                      if (!newV->contains(p.polygon) && !isOut(p.polygon)){
                           flag = 1;
                           newV->push_back(p);
+
                           //qInfo() << i << j;
                           break;
                       }
-                      p.translate(-i, -j);
+                      p.polygon.translate(-i, -j);
 
                       matrix.rotate(90);
                       matrix.rotate(180, Qt::XAxis);
-                      p = matrix.map(p);
-                      p.translate(i, j);
-                      if (!newV->contains(p) && !isOut(p)){
+                      p.polygon = matrix.map(p.polygon);
+                      p.polygon.translate(i, j);
+                      if (!newV->contains(p.polygon) && !isOut(p.polygon)){
                           flag = 1;
                           newV->push_back(p);
                          // qInfo() << i << j;
                           break;
                       }
-                      p.translate(-i, -j);
+                      p.polygon.translate(-i, -j);
                    }
                    if (flag) break;
                   // qInfo() << "Ok - 5";
@@ -173,7 +187,7 @@ public:
 
            int fi = -1;
            for(auto i : *v->getObject()){
-               for(QPoint j : i){
+               for(QPoint j : i.polygon){
                    fi = std::max(fi, j.x());
                }
            }
@@ -190,17 +204,21 @@ public:
         for(int i = 0; i < n; ++i){
             population.push_back(v->nextPopulation());
             fit(population[i]);
+
            // qInfo() << fitFumc(population[i]);
         }
 
         std::sort(population.begin(), population.end(), cmp);
 
-//        for(int i = 0; i < population[0]->size(); ++i){
-//            qInfo() << population[0]->at(i) << population[1]->at(i);
-//        }
         for(int i = 0; i < population.size(); ++i){
-            qInfo() << population[i]->fit << population[i]->fitFunc(0, population[i]->size());
+            qInfo() << population[i]->fit << '\n' << "------------";
+            for(auto j : *population[i]){
+                qInfo() << j.number << " ";
+            }
+            qInfo() << "---------------------\n";
+
         }
+
     }
 
     PackedObjectContainer* Top(){
