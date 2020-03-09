@@ -19,6 +19,21 @@ struct PackedObject{
         polygon = Obj;
         number = i;
     }
+    PackedObject(const PackedObject &Obj){
+        polygon = Obj.polygon;
+        number = Obj.number;
+    }
+    void update(const PackedObject &Obj){
+        polygon = Obj.polygon;
+        number = Obj.number;
+    }
+    PackedObject& operator= (const PackedObject &Obj)
+    {
+        polygon = Obj.polygon;
+        number = Obj.number;
+
+        return *this;
+    }
 };
 
 class PackedObjectContainer{
@@ -60,8 +75,8 @@ public:
         return v;
     }
 
-    PackedObject at(const int index){
-        return v->at(index);
+    PackedObject& at(int index) const{
+        return v->begin()[index];
     }
 
     QVector<PackedObject>::iterator begin(){
@@ -98,6 +113,23 @@ public:
         return fi;
     }
 
+    PackedObjectContainer* reverseObjects(){
+        PackedObjectContainer *newV = new PackedObjectContainer;
+
+        for(auto i : *v){
+            QPolygon p = i.polygon;
+            QTransform matrix;
+            matrix.rotate(90);
+            matrix.rotate(180, Qt::XAxis);
+            p = matrix.map(p);
+            newV->push_back(PackedObject(p, i.number));
+        }
+
+        return newV;
+    }
+
+
+
 
 };
 
@@ -112,7 +144,7 @@ public:
         this->H = H;
     }
 
-    bool isOut(QPolygon &p){
+    bool inline isOut(QPolygon &p){
         for(QPoint i : p){
             if (i.x() < 0 || i.x() > W) return 1;
             if (i.y() < 0 || i.y() > H) return 1;
@@ -129,7 +161,7 @@ public:
                    for(int j = 0; j <= H; ++j){
 
                       PackedObject p = v->at(k);
-                      QTransform matrix;
+
 
                       p.polygon.translate(i, j);
                       if (!newV->contains(p.polygon) && !isOut(p.polygon)){
@@ -141,42 +173,7 @@ public:
                       }
                       p.polygon.translate(-i, -j);
 
-                      matrix.rotate(90);
-                      matrix.rotate(180, Qt::XAxis);
-                      p.polygon = matrix.map(p.polygon);
-                      p.polygon.translate(i, j);
-                      if (!newV->contains(p.polygon) && !isOut(p.polygon)){
-                          flag = 1;
-                          newV->push_back(p);
-                          //qInfo() << i << j;
-                          break;
-                      }
-                      p.polygon.translate(-i, -j);
 
-                      matrix.rotate(90);
-                      matrix.rotate(180, Qt::XAxis);
-                      p.polygon = matrix.map(p.polygon);
-                      p.polygon.translate(i, j);
-                      if (!newV->contains(p.polygon) && !isOut(p.polygon)){
-                          flag = 1;
-                          newV->push_back(p);
-
-                          //qInfo() << i << j;
-                          break;
-                      }
-                      p.polygon.translate(-i, -j);
-
-                      matrix.rotate(90);
-                      matrix.rotate(180, Qt::XAxis);
-                      p.polygon = matrix.map(p.polygon);
-                      p.polygon.translate(i, j);
-                      if (!newV->contains(p.polygon) && !isOut(p.polygon)){
-                          flag = 1;
-                          newV->push_back(p);
-                         // qInfo() << i << j;
-                          break;
-                      }
-                      p.polygon.translate(-i, -j);
                    }
                    if (flag) break;
                   // qInfo() << "Ok - 5";
@@ -201,28 +198,79 @@ public:
         return (a->fit < b->fit);
     }
     void initPopulation(PackedObjectContainer* v, int n){
-        for(int i = 0; i < n; ++i){
-            population.push_back(v->nextPopulation());
-            fit(population[i]);
+        QVector<PackedObjectContainer*> lpopulation;
+        QVector<PackedObjectContainer*> rpopulation;
+        for(int i = 0; i < n / 2; ++i){
+            lpopulation.push_back(v->nextPopulation());
+
 
            // qInfo() << fitFumc(population[i]);
+        }
+        v = v->reverseObjects();
+        for(int i = 0; i < n / 2; ++i){
+            rpopulation.push_back(v->nextPopulation());
+
+        }
+
+        for(int i = 0; i < lpopulation.size(); ++i){
+            int k = rand() % (lpopulation[0]->size() - 1);
+            qInfo() << k << lpopulation[0]->size() << " | KKKKKKKKKKKKKKK";
+            for(int j = 0; j < k; ++j){
+
+                int index2in1;
+                for(index2in1 = 0; index2in1 < lpopulation.size(); ++index2in1){
+                   if (rpopulation[i]->at(j).number == lpopulation[i]->at(index2in1).number) break;
+                }
+
+                int index1in2;
+                for(index1in2 = 0; index1in2 < lpopulation.size(); ++index1in2){
+                   if (lpopulation[i]->at(j).number == rpopulation[i]->at(index1in2).number) break;
+                }
+
+                PackedObject Temp = lpopulation[i]->at(j);
+                lpopulation[i]->at(j) = (rpopulation[i]->at(j));
+                rpopulation[i]->at(j) = (Temp);
+
+                qInfo() << lpopulation[i]->at(index2in1).number << " <-> " << rpopulation[i]->at(index1in2).number;
+
+                Temp = lpopulation[i]->at(index2in1);
+                lpopulation[i]->at(index2in1) = rpopulation[i]->at(index1in2);
+                rpopulation[i]->at(index1in2) = Temp;
+
+
+                qInfo() << lpopulation[i]->at(index2in1).number << " <-> " << rpopulation[i]->at(index1in2).number;
+
+
+            }
+            population.push_back(lpopulation[i]);
+            population.push_back(rpopulation[i]);
+        }
+
+        for(auto i : population){
+            fit(i);
         }
 
         std::sort(population.begin(), population.end(), cmp);
 
-        for(int i = 0; i < population.size(); ++i){
-            qInfo() << population[i]->fit << '\n' << "------------";
-            for(auto j : *population[i]){
-                qInfo() << j.number << " ";
-            }
-            qInfo() << "---------------------\n";
 
-        }
+
+//        for(int i = 0; i < population.size(); ++i){
+//            qInfo() << population[i]->fit << '\n' << "------------";
+//            for(auto j : *population[i]){
+//                qInfo() << j.number << " ";
+//            }
+//            qInfo() << "---------------------\n";
+
+//        }
+
+//        for(auto i : population){
+//            qInfo() << i->fit;
+//        }
 
     }
 
     PackedObjectContainer* Top(){
-        return population[0];
+        return population[5];
     }
 
 

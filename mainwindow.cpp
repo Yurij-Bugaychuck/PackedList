@@ -12,13 +12,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     qInfo() << "Ok";
     QPolygon p1(4);
-    p1.putPoints(0, 4, 0, 0, 0, 4, 8, 4, 8, 0);
+    p1.putPoints(0, 4, 0, 0, 0, 1, 2, 1, 2, 0);
 
     QPolygon p2(4);
-    p2.putPoints(0, 4, 0, 0, 0, 10, 1, 10, 1, 0);
+    p2.putPoints(0, 4, 0, 0, 0, 3, 1, 3, 1, 0);
 
     QPolygon p3(4);
-    p3.putPoints(0, 4, 0, 0, 0, 2, 1, 2, 1, 0);
+    p3.putPoints(0, 4, 0, 0, 0, 2, 1, 1, 2, 0);
 
 
     v = new PackedObjectContainer();
@@ -27,27 +27,76 @@ MainWindow::MainWindow(QWidget *parent)
     v->push_back(p2);
     v->push_back(p2);
     v->push_back(p2);
-
     v->push_back(p1);
     v->push_back(p1);
     v->push_back(p1);
     v->push_back(p1);
+    v->push_back(p3);
+    v->push_back(p3);
 
-    v->push_back(p3);
-    v->push_back(p3);
-    v->push_back(p3);
-    v->push_back(p3);
     v->push_back(p2);
     v->push_back(p2);
     v->push_back(p2);
     v->push_back(p2);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p3);
+    v->push_back(p3);
+
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p3);
+    v->push_back(p3);
+
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p3);
+    v->push_back(p3);
+
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p3);
+    v->push_back(p3);
+
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p2);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p1);
+    v->push_back(p3);
+    v->push_back(p3);
 
 
 
 
 
-    for(auto i : *v){
-        qInfo() << i.number;
+
+
+    for(auto i : *v->reverseObjects()){
+        qInfo() << i.polygon;
     }
 
     qInfo() << "OKKKK";
@@ -55,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    Packed = new PackedLib(40, 20);
+    Packed = new PackedLib(30, 10);
 
     Packed->initPopulation(v,100);
 
