@@ -3,19 +3,39 @@
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include "slidewidget.h"
+#include <QPropertyAnimation>
+
+namespace Ui {
+class MainWindow;
+}
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+protected:
+//    void changeEvent(QEvent *e);
+    void resizeEvent(QResizeEvent *event);
+    void mouseMoveEvent(QMouseEvent *ev);
+
+private slots:
+    void slotShowHideSlide();
 
 private:
     Ui::MainWindow *ui;
+    //Ui::SlideWidget *slwg;
+    SlideWidget *m_slideWIdget;
+
+    QPropertyAnimation *m_animation;
+
+    void showHideSlideWidget(bool f_flag);
+    bool m_boolHide;
+    QRect m_geometry;
 };
+
 #endif // MAINWINDOW_H
