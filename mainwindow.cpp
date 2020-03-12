@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
     QPolygon p9(4);
     p9.putPoints(0, 4, 0, 0, 0, 12, 22, 12, 22, 0);
 
+    qInfo() << p1;
+
 
 
     v = new PackedObjectContainer();
@@ -59,23 +61,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-
-
-
-
-    for(auto i : *v->reverseObjects()){
-        qInfo() << i.polygon;
-    }
-
-    qInfo() << "OKKKK";
-
-
-
-
-    Packed = new PackedLib(250, 80);
+    Packed = new PackedLib(1000, 80);
 
     Packed->initPopulation(v,100);
 
+//    Packed->fit(v);
     v = Packed->Top();
     qInfo() << v->size();
 
