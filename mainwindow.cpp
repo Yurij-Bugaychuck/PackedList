@@ -8,6 +8,9 @@
 #include<QtPrintSupport/QPrinter>
 #include<QtPrintSupport/QPrintDialog>
 #include<QPrintPreviewDialog>
+#include<QMessageBox>
+#include<QTextBrowser>
+#include<QWebEngineView>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -33,6 +36,7 @@ void MainWindow::on_pushButton_clicked()
 {
     ui->pushButton->setEnabled(false);
     delete ui->scrollArea_2->widget();
+    if (v) delete v;
     v = new PackedObjectContainer();
 
 
@@ -63,7 +67,7 @@ void MainWindow::on_pushButton_clicked()
 
 
 
-
+    if (Packed) delete Packed;
     Packed = new PackedLib(0, ui->spinHeight->value());
 
 //    Packed->progressBar = ui->progressBar;
@@ -85,9 +89,11 @@ void MainWindow::handleCanceled(){
 }
 void MainWindow::handleFinished(){
     //QObject().thread()->usleep(1000*1000*1);
-    delete v;
+//    delete v;
+    if (!Packed) return;
     PackedObjectContainer *v = Packed->Top();
 
+    qInfo() << v->size();
 
 
     qInfo() << v->size();
@@ -98,7 +104,7 @@ void MainWindow::handleFinished(){
     }
     timer->stop();
     //drawing
-    QPixmap* image = new QPixmap(QSize(v->fit + 100, ui->spinHeight->value() + 100));
+    QPixmap* image = new QPixmap(QSize((v->fit + 100) * GlobalScale, (ui->spinHeight->value() + 100) * GlobalScale));
     QPaintEngine* eng = image->paintEngine();
     QBrush brush;
 
@@ -106,12 +112,12 @@ void MainWindow::handleFinished(){
         image->fill(Qt::transparent);
         //QPainter painter(ui->centralwidget);
         QPainter painterImage(image);
+        painterImage.scale(GlobalScale, GlobalScale);
         painterImage.translate(40, 40);
         //painter.setPen(QPen(Qt::black, 0.09));
         painterImage.setPen(QPen(Qt::black, 1));
         //    painter.;
         //painter.scale(2, 2);
-        painterImage.scale(1, 1);
 
         QFont font;
         font.setPixelSize(8);
@@ -198,17 +204,23 @@ void MainWindow::handleFinished(){
 //        ui->scrollArea->setWidget(ui->label);
 
         imageLabel = new QLabel;
+
+//        imageLabel->setPixmap(image->scaled(image->width() * GlobalScale, image->height() * GlobalScale, Qt::KeepAspectRatio));
         imageLabel->setPixmap(*image);
+
         ui->scrollArea_2->setWidget(imageLabel);
 
 //        setCentralWidget(ui->scrollArea_2);
-        image->save("fill.jpg");
+//        image->save("fill.jpg");
 
-        delete Packed;
+
         ui->pushButton->setEnabled(true);
     }
 
-    delete v;
+//    delete v;
+}
+void MainWindow::upScale(){
+    GlobalScale += 0.5;
 }
 void MainWindow::processOneThing(){
     //ui->label_2->setVisible(true);
@@ -675,7 +687,8 @@ void MainWindow::on_action_5_triggered()
 
 void MainWindow::on_saveAsImage_triggered()
 {
-    if (imageLabel->pixmap()){
+    if (imageLabel == nullptr) return;
+    if (imageLabel && imageLabel->pixmap() != nullptr){
 
 
         QPixmap* image = new QPixmap(imageLabel->pixmap()->size());
@@ -704,7 +717,7 @@ void MainWindow::on_saveAsImage_triggered()
 void MainWindow::on_Print_triggered()
 {
 
-    if (imageLabel->pixmap()){
+    if (imageLabel && imageLabel->pixmap()){
 
 
 
@@ -782,4 +795,62 @@ void MainWindow::on_addPolygon_clicked()
         addNewToList(itm);
     }
 
+}
+
+void MainWindow::on_aboutDev_triggered()
+{
+
+    QDialog *p = new QDialog(this);
+    p->setFixedWidth(500);
+    QVBoxLayout info(p);
+    QLabel msg;
+
+    p->setWindowTitle("Про разработчиков");
+
+
+
+    msg.setText("<p align=\"center\"><b>Разработчики</b></p><ul style=\"list-style:none; margin-left: 74px\">"
+                "<li>Бугайчук Юрий | Программист | <a href=\"mailto:bugaychuck@gmail.com\">bugaychuck@gmail.com</a></li>"
+                "<li>Чепец Иван | Программист | <a href=\"mailto:ivanchepets14@gmail.com\">ivanchepets14@gmail.com</a></li> "
+                "<li>Макин Андрей | Программист | <a href=\"mailto:makintoshka1522@gmail.com\">makintoshka1522@gmail.com</a></li>"
+                "<li>Сохет Лея | Математик | <a href=\"mailto:leasokhet@gmail.com\">leasokhet@gmail.com</a></li>"
+                "<li>Пенцова Мария | Математик | <a href=\"mailto:marija2718@gmail.com\">marija2718@gmail.com</a></li></ul>"
+                "<hr><p align=\"center\"><b>Руководитель проекта</b></p><p align=\"center\">Процай Наталья Тимофеевна</p><hr>"
+                "<p style=\"padding: 0; margin: 0; text-align:center;\"><img src=\":/assets/logo.png\"> </p>"
+                "<p align=\"center\" style=\"padding: 0; margin: 0;text-align:center;\">Национальный технический университет <br> \"Харьковский политехнический институт\"</p>"
+                "<p style=\"text-align:center;\">&copy; 2020</p>");
+
+    info.addWidget(&msg);
+
+    p->exec();
+}
+
+
+void MainWindow::on_pushButton__up_clicked()
+{
+    GlobalScale += 0.5;
+    handleFinished();
+}
+
+void MainWindow::on_pushButton_down_clicked()
+{
+    GlobalScale -= 0.5;
+    handleFinished();
+}
+
+void MainWindow::on_action_triggered()
+{
+    QDialog *p = new QDialog(this);
+    p->setFixedWidth(800);
+     p->setFixedHeight(800);
+    QVBoxLayout info(p);
+    p->setWindowTitle("Краткая инструкция");
+   // QTextBrowser msg;
+
+    QWebEngineView page;
+   // msg.setSource(QUrl(QLatin1String("qrc:/assets/help/help.html")));
+
+    page.load(QUrl(QLatin1String("qrc:/assets/help/help.html")));
+    info.addWidget(&page);
+    p->exec();
 }

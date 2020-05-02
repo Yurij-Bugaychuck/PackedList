@@ -1,4 +1,4 @@
-QT       += core gui widgets printsupport
+QT       += core gui widgets printsupport webenginewidgets
 
 CONFIG += c++17
 
@@ -34,7 +34,21 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    .gitignore
+    .gitignore \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background01.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background02.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background03.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background04.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background05.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background06.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background07.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background08.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background09.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background10.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background11.jpg \
+    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background12.jpg \
+    assets/help/help.html \
+    assets/openfile.png
 
 RESOURCES += \
     assets.qrc

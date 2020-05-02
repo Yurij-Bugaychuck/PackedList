@@ -8,5 +8,23 @@
         <file>assets/tag.png</file>
         <file>assets/edit.png</file>
         <file>assets/cutter.ico</file>
+        <file>assets/openfile.png</file>
+        <file>assets/print.png</file>
+        <file>assets/save.png</file>
+        <file>assets/saveasimage.png</file>
+        <file>assets/logo.png</file>
+        <file>assets/help/help.html</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background01.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background02.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background03.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background04.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background05.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background06.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background07.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background08.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background09.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background10.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background11.jpg</file>
+        <file>assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background12.jpg</file>
     </qresource>
 </RCC>
