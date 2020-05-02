@@ -4,7 +4,7 @@
 
 ### Installation
 
-Dillinger requires [Qt](https://www.qt.io/) v5.12+ with MCVS2017 C++ compiller.
+Project requires [Qt](https://www.qt.io/) v5.12+ with MCVS2017 C++ compiller.
 
 Clone project to your folder.
 
