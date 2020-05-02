@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/stop.png</file>
+        <file>assets/copy.png</file>
+        <file>assets/qss/style.qss</file>
+        <file>assets/height.png</file>
+        <file>assets/width.png</file>
+        <file>assets/tag.png</file>
+        <file>assets/edit.png</file>
+        <file>assets/cutter.ico</file>
+    </qresource>
+</RCC>
