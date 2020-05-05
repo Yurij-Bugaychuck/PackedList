@@ -11,6 +11,7 @@
 #include<QMessageBox>
 #include<QTextBrowser>
 #include<QWebEngineView>
+#include<QColorDialog>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     connect(timer, SIGNAL(timeout()), this, SLOT(processOneThing()));
-    PackedListItem *itm = new PackedListItem("Test", 500, 50, 7);
+    //PackedListItem *itm = new PackedListItem("Test", 500, 50, 7);
 
 //    addNewToList(itm);
 //    on_pushButton_clicked();
@@ -134,11 +135,14 @@ void MainWindow::handleFinished(){
             QPainterPath path;
             path.addPolygon(itm.polygon);
 
+                qInfo() <<itm.Name << itm.Color;
 
-                brush.setColor(QColor("#29b6f6"));
+             QBrush  brush;
+             brush.setColor(itm.Color);
                 brush.setStyle(Qt::SolidPattern);
+            painterImage.drawPolygon(itm.polygon);
             painterImage.fillPath(path, brush);
-            painterImage.drawPolygon(itm.polygon, Qt::WindingFill);
+            painterImage.drawPolygon(itm.polygon);
 
             painterImage.drawText(itm.polygon[0].x() + 2, itm.polygon[0].y() + 8, itm.Name);
 
@@ -246,6 +250,11 @@ void MainWindow::processOneThing(){
     ui->label_2->setText(t);
 
 }
+QColor MainWindow::getColor(){
+    QColorDialog *colorDialog = new QColorDialog(this);
+
+    return colorDialog->getColor();
+}
 void MainWindow::on_pushButton_2_clicked()
 {
     QDialog dialog(this);
@@ -253,7 +262,7 @@ void MainWindow::on_pushButton_2_clicked()
     QFormLayout form(&dialog);
     dialog.setWindowTitle("Добавление прямоугольника");
     // Add some text above the fields
-    dialog.setFixedWidth(300);
+    dialog.setFixedWidth(520);
     form.addRow(new QLabel("Добавление элемента"));
 
     // Add the lineEdits with their respective labels
@@ -273,6 +282,12 @@ void MainWindow::on_pushButton_2_clicked()
     Countline->setMaximum(100);
     form.addRow("Count", Countline);
 
+    QColorDialog *colorDialog = new QColorDialog(&dialog);
+    colorDialog->setWindowFlags(Qt::SubWindow);
+    colorDialog->setOption(QColorDialog::NoButtons);
+    colorDialog->setCurrentColor("#000");
+//    colorDialog->setFixedWidth(500);
+    form.addRow(colorDialog);
     // Add some standard buttons (Cancel/Ok) at the bottom of the dialog
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &dialog);
@@ -288,7 +303,7 @@ void MainWindow::on_pushButton_2_clicked()
     if (dialog.exec() == QDialog::Accepted) {
 
         //--------------------
-        PackedListItem *itm = new PackedListItem(Nameline->text(), Widthline->value(), Heightline->value(), Countline->value());
+        PackedListItem *itm = new PackedListItem(Nameline->text(), Widthline->value(), Heightline->value(), Countline->value(), colorDialog->currentColor());
 
         addNewToList(itm);
     }
@@ -305,7 +320,7 @@ void MainWindow::addNewToList(PackedListItem* itm){
         //QPainter painter(ui->centralwidget);
         QPainter painterImage(image);
         //painter.setPen(QPen(Qt::black, 0.09));
-        painterImage.setPen(QPen(Qt::black, 0.09));
+        painterImage.setPen(QPen(itm->Color, 0.09));
         //    painter.;
         //painter.scale(2, 2);
         painterImage.scale(1, 1);
@@ -313,7 +328,7 @@ void MainWindow::addNewToList(PackedListItem* itm){
         path.addPolygon(itm->polygon);
 
         QBrush brush;
-            brush.setColor(Qt::black);
+            brush.setColor(itm->Color);
             brush.setStyle(Qt::SolidPattern);
         painterImage.fillPath(path, brush);
     }
@@ -412,7 +427,7 @@ void MainWindow::editFromList(){
 
     QDialog dialog(this);
     dialog.setWindowTitle("Редактирование элемента");
-    dialog.setFixedWidth(300);
+    dialog.setFixedWidth(520);
     // Use a layout allowing to have a label next to each field
     QFormLayout form(&dialog);
 
@@ -430,7 +445,7 @@ void MainWindow::editFromList(){
         k->setFixedHeight(200);
         k->updatep(itm->polygon, itm->msh);
         form.addRow(k);
-        dialog.setFixedWidth(500);
+        dialog.setFixedWidth(520);
         // Add some text above the fields
 
         // Add the lineEdits with their respective labels
@@ -469,6 +484,14 @@ void MainWindow::editFromList(){
     Countline->setValue(itm->Count);
     form.addRow("Count", Countline);
 
+
+    QColorDialog *colorDialog = new QColorDialog(&dialog);
+    colorDialog->setWindowFlags(Qt::SubWindow);
+    colorDialog->setOption(QColorDialog::NoButtons);
+    colorDialog->setCurrentColor(itm->Color);
+//    colorDialog->setFixedWidth(500);
+    form.addRow(colorDialog);
+
     // Add some standard buttons (Cancel/Ok) at the bottom of the dialog
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &dialog);
@@ -487,6 +510,7 @@ void MainWindow::editFromList(){
         //PackedListItem *nitm = new PackedListItem(Nameline->text(), Widthline->value(), Heightline->value(), Countline->value());
 
         itm->Name = Nameline->text();
+        itm->Color = colorDialog->currentColor();
         if (!itm->isPoly) itm->Width = Widthline->value();
         if (!itm->isPoly) itm->Height = Heightline->value();
         if (itm->isPoly) itm->msh = mash->value();
@@ -502,7 +526,7 @@ void MainWindow::editFromList(){
             //QPainter painter(ui->centralwidget);
             QPainter painterImage(image);
             //painter.setPen(QPen(Qt::black, 0.09));
-            painterImage.setPen(QPen(Qt::black, 0.09));
+            painterImage.setPen(QPen(itm->Color, 0.09));
             //    painter.;
             //painter.scale(2, 2);
             painterImage.scale(1, 1);
@@ -510,7 +534,7 @@ void MainWindow::editFromList(){
             path.addPolygon(itm->polygon);
 
             QBrush brush;
-                brush.setColor(Qt::black);
+                brush.setColor(itm->Color);
                 brush.setStyle(Qt::SolidPattern);
             painterImage.fillPath(path, brush);
         }
@@ -773,6 +797,13 @@ void MainWindow::on_addPolygon_clicked()
     Countline->setMaximum(100);
     form.addRow("Count", Countline);
 
+    QColorDialog *colorDialog = new QColorDialog(&dialog);
+    colorDialog->setWindowFlags(Qt::SubWindow);
+    colorDialog->setOption(QColorDialog::NoButtons);
+    colorDialog->setCurrentColor("#000");
+//    colorDialog->setFixedWidth(500);
+    form.addRow(colorDialog);
+
     // Add some standard buttons (Cancel/Ok) at the bottom of the dialog
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &dialog);
@@ -789,7 +820,7 @@ void MainWindow::on_addPolygon_clicked()
         qInfo() << k->getPolygon(mash->value());
 
         //--------------------
-        PackedListItem *itm = new PackedListItem(Nameline->text(), Countline->value(), k->getPolygon(mash->value()));
+        PackedListItem *itm = new PackedListItem(Nameline->text(), Countline->value(), k->getPolygon(mash->value()), colorDialog->currentColor());
         itm->msh = mash->value();
         itm->isPoly = 1;
         addNewToList(itm);
@@ -801,7 +832,7 @@ void MainWindow::on_aboutDev_triggered()
 {
 
     QDialog *p = new QDialog(this);
-    p->setFixedWidth(500);
+    p->setFixedWidth(520);
     QVBoxLayout info(p);
     QLabel msg;
 

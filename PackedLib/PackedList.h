@@ -14,18 +14,21 @@ public:
     bool isPoly = 0;
     int msh = 0;
     QPolygon polygon;
+    QColor Color;
 
     PackedListItem(){
 
     }
-    PackedListItem(QString name, int w, int h, int count){
+    PackedListItem(QString name, int w, int h, int count, QColor color = "#000"){
         Name = name;
         Width = w;
         Height = h;
         Count = count;
+        Color = color;
         polygon.putPoints(0, 4, 0, 0, 0, h, w, h, w, 0);
     }
-    PackedListItem(QString name, int count, QPolygon p){
+    PackedListItem(QString name, int count, QPolygon p, QColor color = "#000"){
+        Color = color;
         Name = name;
         Count = count;
         polygon = p;
@@ -37,6 +40,7 @@ public:
     }
     PackedListItem(PackedListItem* it){
         Name = it->Name;
+        Color = it->Color;
         Width = it->Width;
         Height = it->Height;
         Count = it->Count;
@@ -52,6 +56,7 @@ public:
         polygon = it.polygon;
         isPoly = it.isPoly;
         msh = it.msh;
+        Color = it.Color;
 
         return *this;
     }

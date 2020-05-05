@@ -22,34 +22,40 @@ struct PackedObject{
     int number = 0;
     QPolygon polygon;
     QString Name = "default";
+    QColor Color;
     PackedObject(){
 
     }
-    PackedObject(QPolygon Obj, int i, QString name = "default"){
+    PackedObject(QPolygon Obj, int i, QString name = "default", QColor color = "#000"){
         polygon = Obj;
         number = i;
         Name = name;
+        Color = color;
     }
     PackedObject(PackedListItem Obj, int i){
         polygon = Obj.polygon;
         Name = Obj.Name;
+        Color = Obj.Color;
         number = i;
     }
     PackedObject(const PackedObject &Obj){
         polygon = Obj.polygon;
         number = Obj.number;
         Name = Obj.Name;
+        Color = Obj.Color;
     }
     void update(const PackedObject &Obj){
         polygon = Obj.polygon;
         number = Obj.number;
         Name = Obj.Name;
+        Color = Obj.Color;
     }
     PackedObject& operator= (const PackedObject &Obj)
     {
         polygon = Obj.polygon;
         number = Obj.number;
         Name = Obj.Name;
+        Color = Obj.Color;
 
         return *this;
     }
@@ -168,7 +174,7 @@ public:
                 p = matrix.map(p);
             }
 
-            newV->push_back(PackedObject(p, i.number, i.Name));
+            newV->push_back(PackedObject(p, i.number, i.Name, i.Color));
 
         }
 

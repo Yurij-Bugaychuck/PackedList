@@ -34,6 +34,7 @@ public:
     void handleCanceled();
     QLabel *imageLabel = nullptr;
     QListWidgetItem* novitem;
+    QColor getColor();
 private slots:
     void upScale();
     void processOneThing();
