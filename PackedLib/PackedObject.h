@@ -416,7 +416,7 @@ public:
             updateValue(OP_COUNTER / ALL_OP * 100);
             setValue(OP_COUNTER / ALL_OP * 100);
 
-            if (k_kol > 15) {
+            if (k_kol > 20) {
                 updateValue(100);
                 setValue(100);
 
