@@ -1,3 +1,6 @@
+// Adding Polygon Widget for Modal Window
+
+
 #ifndef POLYGINONPUTERWIDGET_H
 #define POLYGINONPUTERWIDGET_H
 

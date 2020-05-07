@@ -19,11 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     connect(timer, SIGNAL(timeout()), this, SLOT(processOneThing()));
-    //PackedListItem *itm = new PackedListItem("Test", 500, 50, 7);
-
-//    addNewToList(itm);
-//    on_pushButton_clicked();
-//    on_addPolygon_clicked();
 }
 
 
@@ -32,7 +27,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
+// Start proccess Calc
 void MainWindow::on_pushButton_clicked()
 {
     ui->pushButton->setEnabled(false);
@@ -48,17 +43,6 @@ void MainWindow::on_pushButton_clicked()
             v->push_back(elem);
         }
     }
-//    QPolygon r(6);
-//    r.putPoints(0, 6, 0, 0, 0, 80, 80, 80, 80, 40, 40, 40, 40, 0);
-
-//    v->push_back(r);
-//    v->push_back(r);
-//    v->push_back(r);
-//    v->push_back(r);
-//    v->push_back(r);
-
-    qInfo() << "OK ||" << v->size();
-
 
     if (v->size() == 0) {
 
@@ -66,31 +50,30 @@ void MainWindow::on_pushButton_clicked()
         return;
     }
 
-
-
     if (Packed) delete Packed;
     Packed = new PackedLib(0, ui->spinHeight->value());
 
-//    Packed->progressBar = ui->progressBar;
-
     time = 0; stime = 0;
     timer->start(1000);
+
+    //gen populations
     QFuture<void> future = QtConcurrent::run([=]() {
         Packed->initPopulation(v, 50);
     });
 
     connect(Packed, SIGNAL(setValue(int)), ui->progressBar, SLOT(setValue(int)));
     connect(Packed, SIGNAL(taskCompleted()), this, SLOT(handleFinished()));
-
-    //connect(timer, SIGNAL(timeout()), this, SLOT(processOneThing()));
-
 }
+
+
+//if error with init
 void MainWindow::handleCanceled(){
     ui->pushButton->setEnabled(true);
 }
+
+
+//end proccess \ painting
 void MainWindow::handleFinished(){
-    //QObject().thread()->usleep(1000*1000*1);
-//    delete v;
     if (!Packed) return;
     PackedObjectContainer *v = Packed->Top();
 
@@ -104,7 +87,8 @@ void MainWindow::handleFinished(){
         return;
     }
     timer->stop();
-    //drawing
+
+    //drawing a packing
     QPixmap* image = new QPixmap(QSize((v->fit + 100) * GlobalScale, (ui->spinHeight->value() + 100) * GlobalScale));
     QPaintEngine* eng = image->paintEngine();
     QBrush brush;
@@ -190,42 +174,15 @@ void MainWindow::handleFinished(){
                 //painterImage.rotate(-90);
             }
         }
-
-
-
-//        ui->scrollArea_2->setWidgetResizable(false);
-
-//        ui->label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-//        ui->label->setScaledContents(true);
-//        ui->label->setGeometry(0, 0, image->width() , image->height());
-
-//        ui->label->setFixedSize(QSize(image->width() , image->height()));
-
-//        ui->label->setPixmap(*image);
-
-//        ui->label->setMinimumSize(QSize(image->width() , image->height()));
-
-//        ui->scrollArea->setWidget(ui->label);
-
         imageLabel = new QLabel;
-
-//        imageLabel->setPixmap(image->scaled(image->width() * GlobalScale, image->height() * GlobalScale, Qt::KeepAspectRatio));
         imageLabel->setPixmap(*image);
 
         ui->scrollArea_2->setWidget(imageLabel);
-
-//        setCentralWidget(ui->scrollArea_2);
-//        image->save("fill.jpg");
-
-
         ui->pushButton->setEnabled(true);
     }
+}
 
-//    delete v;
-}
-void MainWindow::upScale(){
-    GlobalScale += 0.5;
-}
+//Timer
 void MainWindow::processOneThing(){
     //ui->label_2->setVisible(true);
     qInfo() << "KEK";
@@ -250,11 +207,9 @@ void MainWindow::processOneThing(){
     ui->label_2->setText(t);
 
 }
-QColor MainWindow::getColor(){
-    QColorDialog *colorDialog = new QColorDialog(this);
 
-    return colorDialog->getColor();
-}
+
+//Button to add a Rectangle
 void MainWindow::on_pushButton_2_clicked()
 {
     QDialog dialog(this);
@@ -310,6 +265,7 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 
+//Void adding to PaintedList at right
 void MainWindow::addNewToList(PackedListItem* itm){
 
 
@@ -402,6 +358,8 @@ void MainWindow::addNewToList(PackedListItem* itm){
     connect(b3, SIGNAL(clicked()), this, SLOT(editFromList()));
 }
 
+
+//Remove from PaintedList
 void MainWindow::removeFromList(){
     QPoint globalCursorPos = ui->listWidget->mapFromGlobal(QCursor::pos());
     qInfo() <<globalCursorPos<< ui->listWidget->itemAt(globalCursorPos);
@@ -411,6 +369,9 @@ void MainWindow::removeFromList(){
 
     delete it;
 }
+
+
+//Copy From PaintedList
 void MainWindow::copyFromList(){
     QPoint globalCursorPos = ui->listWidget->mapFromGlobal(QCursor::pos());
     qInfo() <<globalCursorPos<< ui->listWidget->itemAt(globalCursorPos);
@@ -420,6 +381,9 @@ void MainWindow::copyFromList(){
     addNewToList(newIt);
 
 }
+
+
+//Edit From PaintedList
 void MainWindow::editFromList(){
     QPoint globalCursorPos = ui->listWidget->mapFromGlobal(QCursor::pos());
     qInfo() <<globalCursorPos<< ui->listWidget->itemAt(globalCursorPos);
@@ -613,11 +577,9 @@ void MainWindow::editFromList(){
 //        ui->listWidget->;
     }
 }
-void MainWindow::setnovitem(QListWidgetItem* itm){
-    qInfo() << "KEEEK";
-    novitem = itm;
-}
 
+
+//save to JSON
 void MainWindow::on_action_JSON_triggered()
 {
     QJsonArray arr;
@@ -667,6 +629,9 @@ void MainWindow::on_action_JSON_triggered()
 
 }
 
+
+
+//load from JSON
 void MainWindow::on_action_5_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
@@ -709,6 +674,8 @@ void MainWindow::on_action_5_triggered()
 
 }
 
+
+//save as image
 void MainWindow::on_saveAsImage_triggered()
 {
     if (imageLabel == nullptr) return;
@@ -738,6 +705,8 @@ void MainWindow::on_saveAsImage_triggered()
     }
 }
 
+
+// Print
 void MainWindow::on_Print_triggered()
 {
 
@@ -769,6 +738,8 @@ void MainWindow::on_Print_triggered()
 
 }
 
+
+// Button to adding Polygon
 void MainWindow::on_addPolygon_clicked()
 {
     QDialog dialog(this);
@@ -801,7 +772,6 @@ void MainWindow::on_addPolygon_clicked()
     colorDialog->setWindowFlags(Qt::SubWindow);
     colorDialog->setOption(QColorDialog::NoButtons);
     colorDialog->setCurrentColor("#000");
-//    colorDialog->setFixedWidth(500);
     form.addRow(colorDialog);
 
     // Add some standard buttons (Cancel/Ok) at the bottom of the dialog
@@ -828,6 +798,9 @@ void MainWindow::on_addPolygon_clicked()
 
 }
 
+
+
+//About Modal Window
 void MainWindow::on_aboutDev_triggered()
 {
 
@@ -856,19 +829,23 @@ void MainWindow::on_aboutDev_triggered()
     p->exec();
 }
 
-
+// Scale up
 void MainWindow::on_pushButton__up_clicked()
 {
     GlobalScale += 0.5;
     handleFinished();
 }
 
+
+// Scale Down
 void MainWindow::on_pushButton_down_clicked()
 {
     GlobalScale -= 0.5;
     handleFinished();
 }
 
+
+// Instruction modal window
 void MainWindow::on_action_triggered()
 {
     QDialog *p = new QDialog(this);

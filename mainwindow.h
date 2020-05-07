@@ -36,7 +36,7 @@ public:
     QListWidgetItem* novitem;
     QColor getColor();
 private slots:
-    void upScale();
+
     void processOneThing();
     void handleFinished();
     void on_pushButton_clicked();
@@ -48,7 +48,7 @@ private slots:
     void copyFromList();
     void editFromList();
 
-    void setnovitem(QListWidgetItem* itm);
+
 
 
     void on_action_JSON_triggered();

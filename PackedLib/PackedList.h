@@ -1,3 +1,6 @@
+// Item to PackedList
+
+
 #ifndef PACKEDLISTITEM_H
 #define PACKEDLISTITEM_H
 #include<QPixmap>

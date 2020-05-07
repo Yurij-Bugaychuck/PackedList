@@ -1,3 +1,6 @@
+// Population item
+
+
 #ifndef PackedObjectContainer_H
 #define PackedObjectContainer_H
 
@@ -61,6 +64,8 @@ struct PackedObject{
     }
 };
 
+
+// Population
 class PackedObjectContainer{
     QVector<PackedObject> *v;
 
@@ -119,6 +124,8 @@ public:
         return v->end();
     }
 
+
+    // gen new population \ random funct
     PackedObjectContainer* nextPopulation(){
         PackedObjectContainer *newV = new PackedObjectContainer;
 
@@ -140,6 +147,8 @@ public:
 
         return newV;
     }
+
+    // calc fit Func from a to b
     int fitFunc(int a, int b){
         if (a < 0 || b > v->size()) return -1;
         int fi = -1;
@@ -155,6 +164,7 @@ public:
         v->clear();
     }
 
+    // rotate Objects
     PackedObjectContainer* reverseObjects(int H){
         PackedObjectContainer *newV = new PackedObjectContainer;
 
@@ -189,6 +199,9 @@ public:
 };
 
 
+
+
+// Population container
 class PackedLib : public QObject{
     Q_OBJECT
     int W;
@@ -211,13 +224,14 @@ public:
         }
         return 0;
     }
+
+
+    // Fit func
     void fit(PackedObjectContainer *v){
         PackedObjectContainer *newV = new PackedObjectContainer;
         std::set<std::pair<int, int>> q;
         q.insert({0, 0});
-//        for(int i = 0; i < W; ++i){
-//            q.insert({i, 0});
-//        }
+
         for(int k = 0; k < v->size(); ++k){
             bool flag = 0;
             for(auto to : q){
@@ -263,11 +277,13 @@ public:
 
        return;
    }
-
+    // comporator
     static bool cmp(PackedObjectContainer* a, PackedObjectContainer* b){
         return (a->fit < b->fit);
     }
 
+
+    //Gen Population
     void initPopulation(PackedObjectContainer* v, int n){
         if (v->size() == 1) return;
         QVector<PackedObjectContainer*> lpopulation;
@@ -328,21 +344,6 @@ public:
         for(int jj = 0; jj < ALL_OP; ++jj){
 
             OP_COUNTER++;
-
-            //qInfo() << OP_COUNTER / ALL_OP * 100;
-//            for(auto i : population){
-//              QtConcurrent::run([&] {
-//                  fit(i);
-//              });
-//            }
-
-//            foreach (auto i, population) {
-//                fit(i);
-//            }
-
-
-
-
             for(int i = 0; i < 20; ++i){
                 int os1 = rand() % (population.size() / 2 - 1);
                 int os2 = (population.size() - rand() % (population.size() / 2 - 1)) - 1;
@@ -366,22 +367,14 @@ public:
                     population[os1]->at(j) = (population[os2]->at(j));
                     population[os2]->at(j) = (Temp);
 
-
-    //                qInfo() << lpopulation[i]->at(index2in1).number << " <-> " << rpopulation[i]->at(index1in2).number;
-
                     Temp = population[os1]->at(index2in1);
-                  //  qInfo() << "OK1" << index2in1 << index1in2;
                     population[os1]->at(index2in1) = population[os2]->at(index1in2);
-                  //  qInfo() << "OK2";
                     population[os2]->at(index1in2) = Temp;
-                  //  qInfo() << "OK3";
-
-
-                   // qInfo() << lpopulation[i]->at(index2in1).number << " <-> " << rpopulation[i]->at(index1in2).number;
 
                 }
             }
 
+            // Parallel foreach \ using all cores
             std::for_each(
                 std::execution::par_unseq,
                 population.begin(),
@@ -391,12 +384,8 @@ public:
                     fit(i);
 
                 });
-//            for(auto i : population){
-//                fit(i);
-//            }
-//            QtConcurrent::blockingMapped(population.begin(),population.end(),[&](auto i){
-//                fit(i);
-//            });
+
+
             std::sort(population.begin(), population.end(), cmp);
 
             if (topV->fit > population[0]->fit){
