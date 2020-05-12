@@ -18,13 +18,13 @@
     <property name="geometry">
      <rect>
       <x>1070</x>
-      <y>631</y>
+      <y>611</y>
       <width>191</width>
-      <height>41</height>
+      <height>40</height>
      </rect>
     </property>
     <property name="text">
-     <string>Рассчитать</string>
+     <string>Calculate</string>
     </property>
    </widget>
    <widget class="Line" name="line">
@@ -77,13 +77,13 @@
     <property name="geometry">
      <rect>
       <x>1070</x>
-      <y>120</y>
+      <y>100</y>
       <width>191</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Добавить многоугольник</string>
+     <string>Add Polygon</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -116,7 +116,7 @@
           <x>0</x>
           <y>0</y>
           <width>1011</width>
-          <height>571</height>
+          <height>561</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -134,7 +134,7 @@
            <x>0</x>
            <y>0</y>
            <width>1009</width>
-           <height>569</height>
+           <height>559</height>
           </rect>
          </property>
         </widget>
@@ -169,36 +169,36 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>1110</x>
+      <x>1130</x>
       <y>20</y>
-      <width>121</width>
-      <height>16</height>
+      <width>91</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Настройки полотна</string>
+     <string>CUT SETTINGS</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
       <x>1080</x>
-      <y>84</y>
-      <width>56</width>
-      <height>16</height>
+      <y>64</y>
+      <width>81</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Ширина</string>
+     <string>Canvas width</string>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinHeight">
     <property name="geometry">
      <rect>
-      <x>1140</x>
-      <y>80</y>
-      <width>111</width>
-      <height>25</height>
+      <x>1170</x>
+      <y>60</y>
+      <width>81</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="maximum">
@@ -212,13 +212,13 @@
     <property name="geometry">
      <rect>
       <x>1070</x>
-      <y>150</y>
+      <y>140</y>
       <width>190</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Добавить прямоугольник</string>
+     <string>Add Rectangle</string>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
@@ -268,7 +268,7 @@
        </property>
        <property name="icon">
         <iconset resource="assets.qrc">
-         <normaloff>:/assets/openfile.png</normaloff>:/assets/openfile.png</iconset>
+         <normaloff>:/assets/folder.png</normaloff>:/assets/folder.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -454,12 +454,12 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menutest">
     <property name="title">
-     <string>Файл</string>
+     <string>File</string>
     </property>
     <addaction name="separator"/>
     <addaction name="separator"/>
@@ -472,7 +472,7 @@
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
-     <string>Инфо</string>
+     <string>Info</string>
     </property>
     <addaction name="action"/>
     <addaction name="separator"/>
@@ -491,7 +491,10 @@
      <normaloff>:/assets/saveasimage.png</normaloff>:/assets/saveasimage.png</iconset>
    </property>
    <property name="text">
-    <string>Сохранить как изображение</string>
+    <string>Save as image</string>
+   </property>
+   <property name="toolTip">
+    <string>Save as image</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -503,7 +506,7 @@
      <normaloff>:/assets/print.png</normaloff>:/assets/print.png</iconset>
    </property>
    <property name="text">
-    <string>Печать</string>
+    <string>Print</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -515,7 +518,7 @@
      <normaloff>:/assets/openfile.png</normaloff>:/assets/openfile.png</iconset>
    </property>
    <property name="text">
-    <string>Открыть</string>
+    <string>Open</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -527,7 +530,7 @@
      <normaloff>:/assets/save.png</normaloff>:/assets/save.png</iconset>
    </property>
    <property name="text">
-    <string>Сохранить как файл настроек</string>
+    <string>Save settings</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -535,12 +538,15 @@
   </action>
   <action name="action">
    <property name="text">
-    <string>Краткая инструкция</string>
+    <string>Instruction</string>
    </property>
   </action>
   <action name="aboutDev">
    <property name="text">
-    <string>Про разработчиков</string>
+    <string>About</string>
+   </property>
+   <property name="iconText">
+    <string>About</string>
    </property>
   </action>
  </widget>

@@ -19,6 +19,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     connect(timer, SIGNAL(timeout()), this, SLOT(processOneThing()));
+
+
+    QWebEngineView *page = new QWebEngineView();
+
+
+    page->load(QUrl(QLatin1String("qrc:/assets/help/help.html")));
+    page->show();
+    ui->scrollArea_2->setWidget(page);
 }
 
 
@@ -215,10 +223,10 @@ void MainWindow::on_pushButton_2_clicked()
     QDialog dialog(this);
     // Use a layout allowing to have a label next to each field
     QFormLayout form(&dialog);
-    dialog.setWindowTitle("Добавление прямоугольника");
+    dialog.setWindowTitle("Rectangle");
     // Add some text above the fields
     dialog.setFixedWidth(520);
-    form.addRow(new QLabel("Добавление элемента"));
+    form.addRow(new QLabel("Add item"));
 
     // Add the lineEdits with their respective labels
 
@@ -331,7 +339,7 @@ void MainWindow::addNewToList(PackedListItem* itm){
     h->setStyleSheet("background: url(':/assets/height.png') no-repeat; background-position: left center; padding-left: 20px; vertical-align:middle;");
     QLabel *c= new QLabel("Count:" + QString::number(itm->Count));
 
-    QLabel *Msh= new QLabel("Масштаб:" + QString::number(itm->msh));
+    QLabel *Msh= new QLabel("Scale:" + QString::number(itm->msh));
 
     HLay2->addWidget(n);
     if (!itm->isPoly) HLay2->addWidget(w);
@@ -416,7 +424,7 @@ void MainWindow::editFromList(){
 
         mash->setMaximum(999);
         mash->setValue(itm->msh);
-        form.addRow("Масштаб (1:X)", mash);
+        form.addRow("Scale (1:X)", mash);
     }
 
     QLineEdit *Nameline = new QLineEdit(&dialog);
@@ -545,7 +553,7 @@ void MainWindow::editFromList(){
         h->setStyleSheet("background: url(':/assets/height.png') no-repeat; background-position: left center; padding-left: 20px; vertical-align:middle;");
         QLabel *c= new QLabel("Count:" + QString::number(itm->Count));
 
-        QLabel *Msh= new QLabel("Масштаб:" + QString::number(itm->msh));
+        QLabel *Msh= new QLabel("Scale:" + QString::number(itm->msh));
 
         HLay2->addWidget(n);
         if (!itm->isPoly) HLay2->addWidget(w);
@@ -744,10 +752,10 @@ void MainWindow::on_addPolygon_clicked()
 {
     QDialog dialog(this);
     dialog.setFixedWidth(500);
-    dialog.setWindowTitle("Добавление многоугольника");
+    dialog.setWindowTitle("Polygon");
     // Use a layout allowing to have a label next to each field
     QFormLayout form(&dialog);
-    form.addRow(new QLabel("Добавление элемента"));
+    form.addRow(new QLabel("Item settings"));
 
     PolygonInputerWidget *k = new PolygonInputerWidget(&dialog);
     k->setFixedHeight(200);

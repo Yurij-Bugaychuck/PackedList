@@ -35,6 +35,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     .gitignore \
+    assets/folder.png \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background01.jpg \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background02.jpg \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background03.jpg \
