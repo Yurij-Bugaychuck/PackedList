@@ -767,7 +767,7 @@ void MainWindow::on_addPolygon_clicked()
     QSpinBox *mash = new QSpinBox(&dialog);
     mash->setMaximum(999);
     mash->setValue(10);
-    form.addRow("Масштаб (1:X)", mash);
+    form.addRow("Scale (1:X)", mash);
 
     QLineEdit *Nameline = new QLineEdit(&dialog);
     form.addRow("Name", Nameline);

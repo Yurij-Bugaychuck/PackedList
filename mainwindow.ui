@@ -268,7 +268,7 @@
        </property>
        <property name="icon">
         <iconset resource="assets.qrc">
-         <normaloff>:/assets/folder.png</normaloff>:/assets/folder.png</iconset>
+         <normaloff>:/assets/folder (1).png</normaloff>:/assets/folder (1).png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -515,7 +515,7 @@
   <action name="action_5">
    <property name="icon">
     <iconset resource="assets.qrc">
-     <normaloff>:/assets/openfile.png</normaloff>:/assets/openfile.png</iconset>
+     <normaloff>:/assets/folder (1).png</normaloff>:/assets/folder (1).png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
