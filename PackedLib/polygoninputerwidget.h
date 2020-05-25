@@ -17,7 +17,7 @@ public:
     explicit PolygonInputerWidget(QWidget *parent = nullptr);
     QPolygon getPolygon(int);
     void updatep(QPolygon p, int);
-
+    bool static cmp(const QPoint &a, const QPoint &b);
 protected:
      void paintEvent(QPaintEvent *event) override;
      void mouseMoveEvent( QMouseEvent *e ) override;

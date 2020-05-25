@@ -27,6 +27,10 @@ MainWindow::MainWindow(QWidget *parent)
     page->load(QUrl(QLatin1String("qrc:/assets/help/help.html")));
     page->show();
     ui->scrollArea_2->setWidget(page);
+
+//    openf("C:/Users/bugay/Desktop/polomino.json");
+
+
 }
 
 
@@ -40,13 +44,16 @@ void MainWindow::on_pushButton_clicked()
 {
     ui->pushButton->setEnabled(false);
     delete ui->scrollArea_2->widget();
-    if (v) delete v;
+
+      qInfo() << "1";
+
     v = new PackedObjectContainer();
+    qInfo() << "2";
 
 
     for(int i = 0; i < ui->listWidget->count(); ++i){
         PackedListItem elem = dynamic_cast<PackedListItem*>(ui->listWidget->item(i));
-
+        qInfo() << elem.polygon;
         for(int j = 0; j < elem.Count; ++j){
             v->push_back(elem);
         }
@@ -58,16 +65,26 @@ void MainWindow::on_pushButton_clicked()
         return;
     }
 
+
     if (Packed) delete Packed;
+    qInfo() << "OK START INIT";
     Packed = new PackedLib(0, ui->spinHeight->value());
 
     time = 0; stime = 0;
     timer->start(1000);
 
-    //gen populations
+
+    Packed->fit(v);
+
+    //qInfo() << v->fit << " | FIIT";
+
+//    gen populations
+    qInfo() << "OK STARTI INIT";
     QFuture<void> future = QtConcurrent::run([=]() {
-        Packed->initPopulation(v, 50);
+         Packed->initPopulation(v, 50);
     });
+
+//    handleFinished();
 
     connect(Packed, SIGNAL(setValue(int)), ui->progressBar, SLOT(setValue(int)));
     connect(Packed, SIGNAL(taskCompleted()), this, SLOT(handleFinished()));
@@ -85,8 +102,17 @@ void MainWindow::handleFinished(){
     if (!Packed) return;
     PackedObjectContainer *v = Packed->Top();
 
-    qInfo() << v->size();
+    for(auto i : *v){
+        qInfo() << i.polygon << i.number;
+    }
 
+
+
+//    v = v->reverseObjects(ui->spinHeight->value());
+//    v = v->reverseObjects(ui->spinHeight->value());
+//    v = v->reverseObjects(ui->spinHeight->value());
+//    v = v->reverseObjects(ui->spinHeight->value());
+//    Packed->fit(v);
 
     qInfo() << v->size();
     qInfo() << v->fit << " ||typee";
@@ -193,9 +219,9 @@ void MainWindow::handleFinished(){
 //Timer
 void MainWindow::processOneThing(){
     //ui->label_2->setVisible(true);
-    qInfo() << "KEK";
+//    qInfo() << "KEK";
     time+=1;
-    qInfo() << time/60 << time % 60;
+//    qInfo() << time/60 << time % 60;
     QString t;
     if (time / 60 < 10) t += "0"; t += QString::number(time/60);
     t += ":";
@@ -598,6 +624,7 @@ void MainWindow::on_action_JSON_triggered()
         obj.insert("isRect", !it->isPoly);
         obj.insert("Name", it->Name);
         obj.insert("Count", it->Count);
+        obj.insert("Color", it->Color.name());
 
         if (it->isPoly){
 
@@ -617,8 +644,24 @@ void MainWindow::on_action_JSON_triggered()
 
         arr.push_back(obj);
     }
+
+    QJsonObject settings;
+    settings.insert("Width", ui->spinHeight->value());
+
+
+
+    QJsonObject Document;
+
+    Document.insert("Settings", settings);
+    Document.insert("Details", arr);
+
+
+
+
     QJsonDocument doc;
-    doc.setArray(arr);
+
+
+    doc.setObject(Document);
     QString fileName = QFileDialog::getSaveFileName(this,
                                                             tr("Сохранить файл настроек"), "",
                                                             tr("JSON (*.json);"));
@@ -637,14 +680,7 @@ void MainWindow::on_action_JSON_triggered()
 
 }
 
-
-
-//load from JSON
-void MainWindow::on_action_5_triggered()
-{
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                            tr("Открыь файл настроек"), "",
-                                                            tr("JSON (*.json);"));
+void MainWindow::openf(QString fileName){
     QFile file(fileName);
 
      if(file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -653,7 +689,7 @@ void MainWindow::on_action_5_triggered()
 
          QJsonDocument doc = QJsonDocument::fromJson(raw.toUtf8());
 
-         QJsonArray arr = doc.array();
+         QJsonArray arr = doc["Details"].toArray();
 
          ui->listWidget->clear();
          for(auto i : arr){
@@ -661,7 +697,7 @@ void MainWindow::on_action_5_triggered()
             PackedListItem *itm;
 
             if (obj["isRect"].toBool()){
-                itm = new PackedListItem(obj["Name"].toString(), obj["Width"].toInt(), obj["Height"].toInt(), obj["Count"].toInt());
+                itm = new PackedListItem(obj["Name"].toString(), obj["Width"].toInt(), obj["Height"].toInt(), obj["Count"].toInt(), obj["Color"].toString());
             }else{
                 QPolygon p;
                 QJsonArray a = obj["Poly"].toArray();
@@ -669,15 +705,26 @@ void MainWindow::on_action_5_triggered()
                     QPoint ps(l.toObject()["x"].toInt(), l.toObject()["y"].toInt());
                     p.push_back(ps);
                 }
-                itm = new PackedListItem(obj["Name"].toString(), obj["Count"].toInt(), p);
-                itm->msh = obj["Scale"].toInt();            }
+                itm = new PackedListItem(obj["Name"].toString(), obj["Count"].toInt(), p, obj["Color"].toString());
+                itm->msh = obj["Scale"].toInt();
+            }
 
             addNewToList(itm);
          }
 
+         ui->spinHeight->setValue(doc["Settings"]["Width"].toInt());
+
 
 
      }
+}
+//load from JSON
+void MainWindow::on_action_5_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                            tr("Открыть файл настроек"), "",
+                                                            tr("JSON (*.json);"));
+    openf(fileName);
 
 
 }

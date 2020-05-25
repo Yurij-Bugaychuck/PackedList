@@ -86,7 +86,9 @@ void PolygonInputerWidget::mousePressEvent(QMouseEvent *event)
 
     this->repaint();
 }
-
+bool PolygonInputerWidget::cmp(const QPoint &a, const QPoint &b){
+    return (a.x() > b.x());
+}
 QPolygon PolygonInputerWidget::getPolygon(int MSH){
     QPolygon ans;
     int mn_x = INT_MAX;
@@ -98,6 +100,8 @@ QPolygon PolygonInputerWidget::getPolygon(int MSH){
         mn_x = std::min(i.x(), mn_x);
         mn_y = std::min(i.y(), mn_y);
     }
+
+    //std::sort(ans.begin(), ans.end(), cmp);
 
     ans.translate(-mn_x, -mn_y);
 

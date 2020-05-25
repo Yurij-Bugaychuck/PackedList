@@ -71,6 +71,8 @@ class PackedObjectContainer{
 
 public:
     ~PackedObjectContainer(){
+        if (!v) return;
+
         v->clear();
         delete v;
     }
@@ -151,9 +153,12 @@ public:
     // calc fit Func from a to b
     int fitFunc(int a, int b){
         if (a < 0 || b > v->size()) return -1;
+        if (a > b) std::swap(a, b);
+        //qInfo() << a << b << v->size();
         int fi = -1;
-        for(int i =  a; i < b; ++i){
-            for(QPoint j : v->takeAt(i).polygon){
+        for(int i =  a; i <= b; ++i){
+            //qInfo()<< i << v->at(i).polygon;
+            for(QPoint j : v->at(i).polygon){
                 fi = std::max(fi, j.x());
             }
         }
@@ -168,23 +173,119 @@ public:
     PackedObjectContainer* reverseObjects(int H){
         PackedObjectContainer *newV = new PackedObjectContainer;
 
-        for(auto i : *v){
+        for(auto itp : *v){
             bool k = false;
-            for(auto j : i.polygon){
+            for(auto j : itp.polygon){
                 if (j.x() > H){
                     k = true;
                     break;
                 }
             }
-            QPolygon p = i.polygon;
+            QPolygon p = itp.polygon;
             if (!k) {
                 QTransform matrix;
                 matrix.rotate(90);
-                matrix.rotate(180, Qt::XAxis);
+//                matrix.rotate(180, Qt::XAxis);
                 p = matrix.map(p);
             }
 
-            newV->push_back(PackedObject(p, i.number, i.Name, i.Color));
+            int mnx = 10000;
+            int mny = 10000;
+            for(auto i: p){
+                mnx = std::min(mnx, i.x());
+                mny = std::min(mny, i.y());
+            }
+
+            QPolygon tp;
+
+            int inp;
+
+            for(inp = 0; inp < p.size(); ++inp){
+                if (p[inp].x() == mnx) break;
+            }
+
+            for(int i  = inp; i < p.size(); ++i){
+                tp.push_back(p[i]);
+            }
+
+            for(int i = 0; i < inp; ++i){
+                tp.push_back(p[i]);
+            }
+
+            p = tp;
+
+
+
+            p.translate(-mnx, -mny);
+           // qInfo() << mnx << mny << "MNSS";
+
+            mnx = 10000;
+            mny = 10000;
+
+           // qInfo() << "next";
+
+            newV->push_back(PackedObject(p, itp.number, itp.Name, itp.Color));
+
+
+
+        }
+
+        return newV;
+    }
+
+    PackedObjectContainer* reverseObjectsH(int H){
+        PackedObjectContainer *newV = new PackedObjectContainer;
+
+        for(auto itp : *v){
+            bool k = false;
+            for(auto j : itp.polygon){
+                if (j.x() > H){
+                    k = true;
+                    break;
+                }
+            }
+            QPolygon p = itp.polygon;
+            if (!k) {
+                QTransform matrix;
+                matrix.rotate(180, Qt::YAxis);
+                p = matrix.map(p);
+            }
+            int mnx = 10000;
+            int mny = 10000;
+            for(auto i: p){
+                mnx = std::min(mnx, i.x());
+                mny = std::min(mny, i.y());
+            }
+
+            QPolygon tp;
+
+            int inp;
+
+            for(inp = 0; inp < p.size(); ++inp){
+                if (p[inp].x() == mnx) break;
+            }
+
+            for(int i  = inp; i < p.size(); ++i){
+                tp.push_back(p[i]);
+            }
+
+            for(int i = 0; i < inp; ++i){
+                tp.push_back(p[i]);
+            }
+
+            p = tp;
+
+
+
+            p.translate(-mnx, -mny);
+          //  qInfo() << mnx << mny << "MNSS";
+
+            mnx = 10000;
+            mny = 10000;
+
+          //  qInfo() << "next";
+
+            newV->push_back(PackedObject(p, itp.number, itp.Name, itp.Color));
 
         }
 
@@ -219,18 +320,31 @@ public:
 
     bool inline isOut(QPolygon &p){
         for(QPoint i : p){
-//            if (i.x() < 0 || i.x() > W) return 1;
+            if (i.x() < 0) return 1;
             if (i.y() < 0 || i.y() > H) return 1;
         }
         return 0;
     }
 
+    ~PackedLib(){
+        delete topV;
+        population.clear();
+    }
+
 
     // Fit func
+public:
     void fit(PackedObjectContainer *v){
         PackedObjectContainer *newV = new PackedObjectContainer;
         std::set<std::pair<int, int>> q;
         q.insert({0, 0});
+        for(int i = 1; i < H; ++i){
+            q.insert({0, i});
+        }
+
+//        for(int i = 1; i < 50; ++i){
+//            q.insert({0, i});
+//        }
 
         for(int k = 0; k < v->size(); ++k){
             bool flag = 0;
@@ -240,17 +354,49 @@ public:
 
                 PackedObject p = v->at(k);
 
-                p.polygon.translate(-p.polygon[0].x(), -p.polygon[0].y());
+                int mnx = 99999;
+                int mny = 99999;
+                for(auto i : p.polygon){
+                    mnx = std::min(mnx, i.x());
+                    mny = std::min(mny, i.y());
+                }
+                p.polygon.translate(-mnx, -mny);
                 p.polygon.translate(i, j);
 
                 if (!newV->contains(p.polygon) && !isOut(p.polygon)){
                     flag = 1;
                     newV->push_back(p);
                    // qInfo() << p.polygon.size() << " | SIIIZE";
-                    for(auto i : p.polygon){
-                        q.insert({i.x(), i.y()});
-                        q.insert({i.x(), 0});
+//                    for(auto i : p.polygon){
+
+//                        q.insert({i.x(), i.y()});
+//                        q.insert({i.x(), 0});
+//                    }
+
+                    for(int i = 0; i < p.polygon.size() - 1; ++i){
+                        int x1 = p.polygon[i].x();
+                        int x2 = p.polygon[i + 1].x();
+                        if (x1 > x2) std::swap(x1,x2);
+
+                        int y1 = p.polygon[i].y();
+                        int y2 = p.polygon[i + 1].y();
+                        if (y1 > y2) std::swap(y1, y2);
+
+                        if (x1 == x2){
+                            for(int ii = y1; ii <= y2; ii += 10){
+                                q.insert({x1, ii});
+
+                            }
+                             q.insert({x1, 0});
+                        }else{
+                            for(int ii = x1; ii <= x2; ii += 10){
+                                q.insert({ii, y1});
+                                q.insert({ii, 0});
+                            }
+                        }
                     }
+
+
 
                     q.erase({i, j});
 
@@ -285,138 +431,360 @@ public:
 
     //Gen Population
     void initPopulation(PackedObjectContainer* v, int n){
+        n  = 20;
         if (v->size() == 1) return;
-        QVector<PackedObjectContainer*> lpopulation;
-        QVector<PackedObjectContainer*> rpopulation;
-        for(int i = 0; i < n / 2; ++i){
-            lpopulation.push_back(v->nextPopulation());
+
+//        fit(v);
+
+//        qInfo() << v->size() << " ||||";
 
 
+//        topV = v;
+
+//        updateValue(100);
+//        setValue(100);
+
+
+//        taskCompleted();
+
+//        return;
+
+        //tester
+
+//        QVector<PackedObjectContainer*> lpopulation;
+//        QVector<PackedObjectContainer*> rpopulation;
+        n /= 2;
+        population.push_back(v);
+        for(int i = 0; i < n; ++i){
+            population.push_back(v->nextPopulation());
            // qInfo() << fitFumc(population[i]);
         }
 
         v = v->reverseObjects(H);
-
-        for(int i = 0; i < n / 2; ++i){
-            rpopulation.push_back(v->nextPopulation());
-
+        population.push_back(v);
+        for(int i = 0; i < n; ++i){
+            population.push_back(v->nextPopulation());
         }
 
-        for(int i = 0; i < lpopulation.size(); ++i){
-            int k = rand() % (lpopulation[0]->size() - 1);
-            //qInfo() << k << lpopulation[0]->size() << " | KKKKKKKKKKKKKKK";
-            for(int j = 0; j < k; ++j){
 
+//        QVector<PackedObjectContainer*> population2;
+//        QVector<PackedObjectContainer*> population3;
+
+        v = v->reverseObjects(H);
+        population.push_back(v);
+        for(int i = 0; i < n ; ++i){
+            population.push_back(v->nextPopulation());
+        }
+
+        v = v->reverseObjects(H);
+        population.push_back(v);
+
+        for(int i = 0; i < n ; ++i){
+            population.push_back(v->nextPopulation());
+        }
+
+        v = v->reverseObjects(H);
+
+        v = v->reverseObjectsH(H);
+        population.push_back(v);
+
+        for(int i = 0; i < n ; ++i){
+            population.push_back(v->nextPopulation());
+        }
+
+        v = v->reverseObjects(H);
+        population.push_back(v);
+
+        for(int i = 0; i < n ; ++i){
+            population.push_back(v->nextPopulation());
+        }
+
+        v = v->reverseObjects(H);
+        population.push_back(v);
+        for(int i = 0; i < n ; ++i){
+            population.push_back(v->nextPopulation());
+        }
+
+        v = v->reverseObjects(H);
+        population.push_back(v);
+
+        for(int i = 0; i < n ; ++i){
+            population.push_back(v->nextPopulation());
+        }
+
+
+        //qInfo () << population.size() << " Heheh";
+        int sz = population.size();
+        for(int i = 0; i < sz; ++i){
+            int os1 = rand() % population.size();
+            int os2 = rand() % population.size();
+            PackedObjectContainer* first_parent = new PackedObjectContainer();
+            PackedObjectContainer* second_parent = new PackedObjectContainer();
+
+            for(auto j : *population[os1]){
+                first_parent->push_back(j);
+            }
+
+            for(auto j : *population[os2]){
+                second_parent->push_back(j);
+            }
+            //qInfo() << "Stage 1";
+
+
+            int k = rand() % (population[os1]->size());
+            for(int j = 0; j < k; ++j){
                 int index2in1;
-                for(index2in1 = 0; index2in1 < lpopulation.size(); ++index2in1){
-                   if (rpopulation[i]->at(j).number == lpopulation[i]->at(index2in1).number) break;
+                for(index2in1 = 0; index2in1 < second_parent->size(); ++index2in1){
+                   if (second_parent->at(j).number == second_parent->at(index2in1).number) break;
                 }
 
                 int index1in2;
-                for(index1in2 = 0; index1in2 < lpopulation.size(); ++index1in2){
-                   if (lpopulation[i]->at(j).number == rpopulation[i]->at(index1in2).number) break;
+                for(index1in2 = 0; index1in2 < first_parent->size(); ++index1in2){
+                   if (first_parent->at(j).number == second_parent->at(index1in2).number) break;
                 }
 
-                PackedObject Temp = lpopulation[i]->at(j);
-                lpopulation[i]->at(j) = (rpopulation[i]->at(j));
-                rpopulation[i]->at(j) = (Temp);
+                PackedObject Temp = first_parent->at(j);
+                first_parent->at(j) = (second_parent->at(j));
+                second_parent->at(j) = (Temp);
 
-                //qInfo() << lpopulation[i]->at(index2in1).number << " <-> " << rpopulation[i]->at(index1in2).number;
-
-                Temp = lpopulation[i]->at(index2in1);
-                lpopulation[i]->at(index2in1) = rpopulation[i]->at(index1in2);
-                rpopulation[i]->at(index1in2) = Temp;
-
-
-                //qInfo() << lpopulation[i]->at(index2in1).number << " <-> " << rpopulation[i]->at(index1in2).number;
-
+                Temp = first_parent->at(index2in1);
+                first_parent->at(index2in1) = second_parent->at(index1in2);
+                second_parent->at(index1in2) = Temp;
 
             }
-            population.push_back(lpopulation[i]);
-            population.push_back(rpopulation[i]);
+            //qInfo() << "Stage 2";
+
+            population.push_back(first_parent);
+            population.push_back(second_parent);
+
         }
 
-        double ALL_OP = 250;
+
+
+
+         qInfo() << "Start";
+
+
+        double ALL_OP = 500;
         double OP_COUNTER = 0;
         topV->fit = INT_MAX;
         int last = 999999;
         int k_kol = 0;
+
+//        Parallel foreach \ using all cores
+       std::for_each(
+           std::execution::par_unseq,
+           population.begin(),
+           population.end(),
+           [&](auto i)
+           {
+               fit(i);
+           });
+
+
         for(int jj = 0; jj < ALL_OP; ++jj){
 
             OP_COUNTER++;
-            for(int i = 0; i < 20; ++i){
-                int os1 = rand() % (population.size() / 2 - 1);
-                int os2 = (population.size() - rand() % (population.size() / 2 - 1)) - 1;
-
-                int k = rand() % (population[0]->size() - 1);
-               // qInfo() << jj << k << population[0]->size() << " | KKKKKKKKKKKKKKK";
-                for(int j = 0; j < k; ++j){
 
 
-                    int index2in1;
-                    for(index2in1 = 0; index2in1 < lpopulation.size(); ++index2in1){
-                       if (population[os2]->at(j).number == population[os2]->at(index2in1).number) break;
-                    }
 
-                    int index1in2;
-                    for(index1in2 = 0; index1in2 < lpopulation.size(); ++index1in2){
-                       if (population[os1]->at(j).number == population[os2]->at(index1in2).number) break;
-                    }
-
-                    PackedObject Temp = population[os1]->at(j);
-                    population[os1]->at(j) = (population[os2]->at(j));
-                    population[os2]->at(j) = (Temp);
-
-                    Temp = population[os1]->at(index2in1);
-                    population[os1]->at(index2in1) = population[os2]->at(index1in2);
-                    population[os2]->at(index1in2) = Temp;
-
-                }
-            }
-
-            // Parallel foreach \ using all cores
-            std::for_each(
-                std::execution::par_unseq,
-                population.begin(),
-                population.end(),
-                [&](auto i)
-                {
-                    fit(i);
-
-                });
 
 
             std::sort(population.begin(), population.end(), cmp);
 
-            if (topV->fit > population[0]->fit){
-                topV->clear();
-                for(auto i : *population[0]){
-                    topV->push_back(i);
 
+
+            topV = population[0];
+            topV->fit = population[0]->fit;
+            double avg = 0;
+            QDebug dbg(QtDebugMsg);
+            for(int i = 0; i < population.size(); ++i){
+               // dbg << population[i]->fit &;
+                if (population[i]->fit % 10 != 0){
+                    topV = population[i];
+
+                    taskCompleted();
+                    return;
                 }
-
-                topV->fit = population[0]->fit;
+                avg += population[i]->fit;
             }
+//            qInfo() << avg << "AVGD";
+            avg /= static_cast<double>(population.size());
 
+//            if (topV->fit > population[0]->fit){
+//                topV->clear();
+//                for(auto i : *population[0]){
+//                    topV->push_back(i);
 
-            if (last >= topV->fit){
+//                }
+
+//                topV->fit = population[0]->fit;
+////                last = topV->fit;
+//            }
+
+//            qInfo() << last << "LL";
+            if (last == topV->fit){
                 k_kol++;
             }else{
+//                qInfo() <<" LOOOOL";
                 last = topV -> fit;
                 k_kol = 0;
             }
+
+
+            if (k_kol > 50) {
+                updateValue(100);
+                setValue(100);
+
+                break;
+            }
+
+            int OT = 20;
+            for(int i = 0; i < OT; ++i){
+                delete population.last();
+                population.pop_back();
+            }
+
+
+//            int os1 = 0;
+
+
+//            int os1 = 0;
+
+//            int k1 = rand() % (population[0]->size() - 1);
+//            int k2 = rand() % (population[0]->size() - 1);
+//            if (k1 > k2) std::swap(k1, k2);
+
+////            int ff = population[os1]->fitFunc(0, k1);
+//            int ff1 = population[os1]->fitFunc(k1, k2);
+//            int os2 = 0;
+//            int mxkorel = 0;
+//            for(int j = 0; j < population.size(); ++j){
+//                if (j != os1){
+////                    int koef = ff - population[j]->fitFunc(0, k1);
+//                    int koef2 = population[j]->fitFunc(k1, k2);
+
+
+
+//                    if (mxkorel < koef2){
+//                        mxkorel = koef2;
+//                        os2 = j;
+////                        k = k2;
+
+//                    }
+
+//                }
+//            }
+
+
+            int os1 = rand() % population[0]->size();
+            int os2 = rand() % population[0]->size();
+            for(int i = 0; i < OT / 2; ++i){
+
+//                qInfo() << "OS1" << os1 << "OS2" << os2;
+
+//                int os1 = i;
+                //qInfo() << "OK";
+
+               // qInfo() << jj << k << population[0]->size() << " | KKKKKKKKKKKKKKK";
+                PackedObjectContainer* first_parent = new PackedObjectContainer();
+                PackedObjectContainer* second_parent = new PackedObjectContainer();
+
+                for(auto j : *population[os1]){
+                    first_parent->push_back(j);
+                }
+
+                for(auto j : *population[os2]){
+                    second_parent->push_back(j);
+                }
+
+
+                int k = rand() % (population[0]->size());
+                for(int j = 0; j < k; ++j){
+                    int index2in1;
+                    for(index2in1 = 0; index2in1 < second_parent->size(); ++index2in1){
+                       if (second_parent->at(j).number == second_parent->at(index2in1).number) break;
+                    }
+
+                    int index1in2;
+                    for(index1in2 = 0; index1in2 < first_parent->size(); ++index1in2){
+                       if (first_parent->at(j).number == second_parent->at(index1in2).number) break;
+                    }
+
+                    PackedObject Temp = first_parent->at(j);
+                    first_parent->at(j) = (second_parent->at(j));
+                    second_parent->at(j) = (Temp);
+
+                    Temp = first_parent->at(index2in1);
+                    first_parent->at(index2in1) = second_parent->at(index1in2);
+                    second_parent->at(index1in2) = Temp;
+
+                }
+
+
+                if (first_parent->fit == INT_MAX) {
+                    topV = first_parent;
+                    taskCompleted();
+                    return;
+                }
+
+                if (second_parent->fit == INT_MAX) {
+                    topV = second_parent;
+                    taskCompleted();
+                    return;
+                }
+
+                int isMutation = rand() % 2;
+
+                if (isMutation){
+                    int isp = rand() % 2;
+                    if (isp) first_parent = first_parent->nextPopulation();
+
+                    int k = rand() % 5;
+                    for(int jj = 0; jj < k; ++jj){
+                       first_parent = first_parent->reverseObjects(H);
+                    }
+                    k = rand() % 2;
+                    if(k){
+                        first_parent = first_parent->reverseObjectsH(H);
+                    }
+                }
+
+                isMutation = rand() % 2;
+
+                if (isMutation){
+                    int isp = rand() % 2;
+                    if (isp) second_parent = second_parent->nextPopulation();
+
+                    int k = rand() % 5;
+                    for(int jj = 0; jj < k; ++jj){
+                       second_parent = second_parent->reverseObjects(H);
+                    }
+                    k = rand() % 2;
+                    if(k){
+                        second_parent = second_parent->reverseObjectsH(H);
+                    }
+                }
+
+                fit(first_parent);
+                fit(second_parent);
+
+//                qInfo() << first_parent->fit << " " << second_parent->fit << " | EEH";
+
+                population.push_back(first_parent);
+                population.push_back(second_parent);
+
+            }
+
+
 
 
 
             updateValue(OP_COUNTER / ALL_OP * 100);
             setValue(OP_COUNTER / ALL_OP * 100);
 
-            if (k_kol > 20) {
-                updateValue(100);
-                setValue(100);
 
-                break;
-            }
+            qInfo() << "NOW: " << topV->fit << " Cur k_kol: " << k_kol << " Pop size: " << population.size() << " AVG " << avg;
 
         }
 

@@ -1,9 +1,10 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-
+#include<random>
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     QApplication a(argc, argv);
 
     // Using styles

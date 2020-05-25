@@ -22,7 +22,7 @@ public:
     PackedListItem(){
 
     }
-    PackedListItem(QString name, int w, int h, int count, QColor color = "#000"){
+    PackedListItem(QString name, int w, int h, int count, QColor color = "#4fc3f7"){
         Name = name;
         Width = w;
         Height = h;
@@ -30,7 +30,7 @@ public:
         Color = color;
         polygon.putPoints(0, 4, 0, 0, 0, h, w, h, w, 0);
     }
-    PackedListItem(QString name, int count, QPolygon p, QColor color = "#000"){
+    PackedListItem(QString name, int count, QPolygon p, QColor color = "#4fc3f7"){
         Color = color;
         Name = name;
         Count = count;

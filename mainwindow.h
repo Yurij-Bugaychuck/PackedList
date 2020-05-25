@@ -35,6 +35,7 @@ public:
     QLabel *imageLabel = nullptr;
     QListWidgetItem* novitem;
     QColor getColor();
+    void openf(QString filename);
 private slots:
 
     void processOneThing();
