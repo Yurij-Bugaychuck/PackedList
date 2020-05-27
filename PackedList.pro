@@ -40,9 +40,6 @@ DISTFILES += \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background02.jpg \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background03.jpg \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background04.jpg \
-    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background05.jpg \
-    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background06.jpg \
-    assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background07.jpg \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background08.jpg \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background09.jpg \
     assets/help/e06722e6-8cc7-11ea-8b25-0cc47a792c0a_id_e06722e6-8cc7-11ea-8b25-0cc47a792c0a_files/background10.jpg \

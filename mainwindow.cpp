@@ -102,9 +102,9 @@ void MainWindow::handleFinished(){
     if (!Packed) return;
     PackedObjectContainer *v = Packed->Top();
 
-    for(auto i : *v){
-        qInfo() << i.polygon << i.number;
-    }
+//    for(auto i : *v){
+//        qInfo() << i.polygon << i.number;
+//    }
 
 
 

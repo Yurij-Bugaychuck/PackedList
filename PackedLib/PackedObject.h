@@ -434,25 +434,6 @@ public:
         n  = 20;
         if (v->size() == 1) return;
 
-//        fit(v);
-
-//        qInfo() << v->size() << " ||||";
-
-
-//        topV = v;
-
-//        updateValue(100);
-//        setValue(100);
-
-
-//        taskCompleted();
-
-//        return;
-
-        //tester
-
-//        QVector<PackedObjectContainer*> lpopulation;
-//        QVector<PackedObjectContainer*> rpopulation;
         n /= 2;
         population.push_back(v);
         for(int i = 0; i < n; ++i){
@@ -600,12 +581,12 @@ public:
             QDebug dbg(QtDebugMsg);
             for(int i = 0; i < population.size(); ++i){
                // dbg << population[i]->fit &;
-                if (population[i]->fit % 10 != 0){
-                    topV = population[i];
+//                if (population[i]->fit % 10 != 0){
+//                    topV = population[i];
 
-                    taskCompleted();
-                    return;
-                }
+//                    taskCompleted();
+//                    return;
+//                }
                 avg += population[i]->fit;
             }
 //            qInfo() << avg << "AVGD";
@@ -646,47 +627,9 @@ public:
             }
 
 
-//            int os1 = 0;
-
-
-//            int os1 = 0;
-
-//            int k1 = rand() % (population[0]->size() - 1);
-//            int k2 = rand() % (population[0]->size() - 1);
-//            if (k1 > k2) std::swap(k1, k2);
-
-////            int ff = population[os1]->fitFunc(0, k1);
-//            int ff1 = population[os1]->fitFunc(k1, k2);
-//            int os2 = 0;
-//            int mxkorel = 0;
-//            for(int j = 0; j < population.size(); ++j){
-//                if (j != os1){
-////                    int koef = ff - population[j]->fitFunc(0, k1);
-//                    int koef2 = population[j]->fitFunc(k1, k2);
-
-
-
-//                    if (mxkorel < koef2){
-//                        mxkorel = koef2;
-//                        os2 = j;
-////                        k = k2;
-
-//                    }
-
-//                }
-//            }
-
-
             int os1 = rand() % population[0]->size();
             int os2 = rand() % population[0]->size();
             for(int i = 0; i < OT / 2; ++i){
-
-//                qInfo() << "OS1" << os1 << "OS2" << os2;
-
-//                int os1 = i;
-                //qInfo() << "OK";
-
-               // qInfo() << jj << k << population[0]->size() << " | KKKKKKKKKKKKKKK";
                 PackedObjectContainer* first_parent = new PackedObjectContainer();
                 PackedObjectContainer* second_parent = new PackedObjectContainer();
 
@@ -722,17 +665,17 @@ public:
                 }
 
 
-                if (first_parent->fit == INT_MAX) {
-                    topV = first_parent;
-                    taskCompleted();
-                    return;
-                }
+//                if (first_parent->fit == INT_MAX) {
+//                    topV = first_parent;
+//                    taskCompleted();
+//                    return;
+//                }
 
-                if (second_parent->fit == INT_MAX) {
-                    topV = second_parent;
-                    taskCompleted();
-                    return;
-                }
+//                if (second_parent->fit == INT_MAX) {
+//                    topV = second_parent;
+//                    taskCompleted();
+//                    return;
+//                }
 
                 int isMutation = rand() % 2;
 
